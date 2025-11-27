@@ -1,11 +1,11 @@
 ---
-layout: page
+layout: default
 title: "Przemek – Engineering Blog"
 ---
 
 # Cześć, jestem Przemek 👋
 
-Buduję rozwiązania w obszarze [tu wpisz: SRE / DevOps / platform engineering / ...].
+Buduję rozwiązania w obszarze SRE / DevOps / platform engineering.
 
 Na tej stronie znajdziesz:
 
