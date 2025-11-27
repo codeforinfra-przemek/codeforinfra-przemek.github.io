@@ -61,14 +61,14 @@ sudo zpool destroy tank
 
 ### Vdev
 
-```
-#A vdev is a building block inside a pool:
-#a single disk,
-#a mirror group,
-#or a RAIDZ group.
-#The pool stripes data across vdevs, and each vdev handles its own redundancy.
-#Example: pool with a RAIDZ1 vdev:
 
+A vdev is a building block inside a pool:
+- a single disk,
+- a mirror group,
+- or a RAIDZ group.
+The pool stripes data across vdevs, and each vdev handles its own redundancy.
+Example: pool with a RAIDZ1 vdev:
+```
 sudo zpool create tank raidz1 \
   /dev/disk/by-id/ata-DISK1-ID \
   /dev/disk/by-id/ata-DISK2-ID \
@@ -79,7 +79,6 @@ sudo zpool add tank raidz1 \
   /dev/disk/by-id/ata-DISK4-ID \
   /dev/disk/by-id/ata-DISK5-ID \
   /dev/disk/by-id/ata-DISK6-ID
-
 ```
 
 ### Dataset
@@ -161,17 +160,25 @@ sudo zfs set compression=lz4 tank/data
 zfs get compression tank/data
 ```
 ZFS compresses transparently; you just see less used space:
-`zfs get compressratio tank/data`
+```
+zfs get compressratio tank/data
+```
 
 ### ZVOL (block devices)
 
 A zvol is a block device exported from ZFS, useful for VM disks, iSCSI LUNs, or running another filesystem inside.
 Create a 50G zvol:
-`sudo zfs create -V 50G tank/vm01-disk`
+```
+sudo zfs create -V 50G tank/vm01-disk
+```
 You’ll get a device like:
-`ls -l /dev/zvol/tank/vm01-disk`
+```
+ls -l /dev/zvol/tank/vm01-disk
+```
 You can then put e.g. ext4 on it:
-`sudo mkfs.ext4 /dev/zvol/tank/vm01-disk`
+```
+sudo mkfs.ext4 /dev/zvol/tank/vm01-disk
+```
 
 ### Managing pool & vdev health
 Basic status & I/O:
@@ -186,7 +193,9 @@ sudo zpool offline tank /dev/disk/by-id/ata-DISK1-ID
 ```
 
 Bring it back:
-`sudo zpool online tank /dev/disk/by-id/ata-DISK1-ID`
+```
+sudo zpool online tank /dev/disk/by-id/ata-DISK1-ID
+```
 
 Replacing a failed device:
 ```
@@ -196,4 +205,45 @@ sudo zpool replace tank \
 ```
 
 Monitor resilvering:
-`zpool status tank`
+```
+zpool status tank
+```
+
+### Importing and exporting pools
+
+Export a pool before moving disks to another system:
+```
+sudo zpool export tank
+```
+
+On the new system, list pools that can be imported:
+```
+sudo zpool import
+```
+
+Import your pool:
+```
+sudo zpool import tank
+```
+
+### Deduplication
+
+ZFS supports block-level deduplication, but you should treat it as an advanced feature:
+
+requires a lot of RAM (rule of thumb: at least ~1–1.5 GiB RAM per TiB of logical data, sometimes more);
+
+if you don’t have enough RAM, performance can fall off a cliff.
+
+Enable dedup on a dataset:
+```
+sudo zfs set dedup=on tank/data
+zfs get dedup tank/data
+```
+
+My personal rule: only enable dedup when you have a clear use case (e.g., many identical VM images) and enough RAM.
+
+
+Or import all known pools:
+```
+sudo zpool import -a
+```
