@@ -125,8 +125,8 @@ RAIDZ3 (triple parity):
 Pick mirror vs RAIDZ based on your workload (IOPS vs capacity) and risk tolerance.
 
 ### Tuning pool & dataset parameters
+You can view all properties:
 ```
-#You can view all properties:
 zpool get all tank
 zfs   get all tank/data
 ```
