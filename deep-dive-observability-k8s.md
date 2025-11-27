@@ -1,9 +1,11 @@
 ---
-layout: default          # albo "default" – oba działają w Minimal
+layout: default
 title: "Deep-dive: Observability w Kubernetes"
 permalink: /deep-dive-observability-k8s.html
 ---
 
+[← Back to index](/)
+
 # Deep-dive: Observability w Kubernetes
 
-[tutaj treść...]
+[Tutaj docelowa treść deep-dive’a – stack, metryki, logi, tracing, przykłady konfiguracji.]
