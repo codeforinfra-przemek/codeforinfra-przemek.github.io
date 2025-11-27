@@ -3,34 +3,30 @@ layout: default
 title: "Przemek – Engineering Blog"
 ---
 
-# Cześć, jestem Przemek 👋
+# Hi, I'm Przemek 👋
 
-Buduję rozwiązania w obszarze SRE / DevOps / platform engineering.
+I design and build infrastructure and platforms in the SRE / DevOps / platform engineering space.
 
-Na co dzień lubię:
-- zaczynać dzień od nowej technologii i problemu, którego jeszcze nie widziałem,
-- uczyć się nowych rozwiązań,
-- nie bać się popełniać błędów,
-- być bezlitosnym dla monitora, jeśli błąd dalej siedzi w 235. linii kodu 😉.
+This site is a collection of technical notes and write-ups that show how I approach problems in production systems: from network automation and CI/CD to Kubernetes, storage and observability.
 
-Na tej stronie znajdziesz:
+Here you will find:
 
-- **Case study** – konkretne projekty, które dowiozłem
-- **Deep-dive / technical write-up** – wgryzienia się w tematy techniczne
-- **Engineering story** – jak podchodzę do problemów
-- **Postmortem** – co poszło nie tak i czego się nauczyłem
+- **Case studies** – concrete projects and delivered outcomes  
+- **Deep-dives / technical write-ups** – detailed exploration of specific topics  
+- **Engineering stories** – how I reason about trade-offs and design decisions  
+- **Postmortems** – what went wrong and what I learned from it  
 
 ---
 
-## Artykuły
+## Articles
 
 ### Networking / Automation
 
 - [AVD / CVP / Ansible Project](avd-cvp-ansible-project.md)
-- [Diffsync & Nautobot – modele i synchronizacja](diffsync-nautobot-models-sync.md)
-- [Masowe skrypty / statyczne trasy](mass-scripts-static-routes.md)
-- [Migracja do Catalyst Center](catalyst-center-migration.md)
-- [Config generator dla NOC (legacy)](config-generator-noc.md)
+- [DiffSync & Nautobot – models and synchronization](diffsync-nautobot-models-sync.md)
+- [Mass scripts and static routes](mass-scripts-static-routes.md)
+- [Migration to Catalyst Center](catalyst-center-migration.md)
+- [Config generator for NOC (legacy)](config-generator-noc.md)
 
 ### Platform / Backend
 
@@ -40,11 +36,11 @@ Na tej stronie znajdziesz:
 
 - [ZFS – quick guide](zfs-quick-guide.md)
 
-### Inne
+### Other
 
-- [Case study: migracja pipeline’ów CI na GitHub Actions](case-study-gha-migration.md)
-- [Deep-dive: Observability w Kubernetes](deep-dive-observability-k8s.md)
+- [Case study: CI pipeline migration to GitHub Actions](case-study-gha-migration.md)
+- [Deep-dive: Observability in Kubernetes](deep-dive-observability-k8s.md)
 
 ---
 
-[Zobacz moje repozytoria na GitHubie](https://github.com/codeforinfra-przemek)
+[View my GitHub repositories](https://github.com/codeforinfra-przemek)
