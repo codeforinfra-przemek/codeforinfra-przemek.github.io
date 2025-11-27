@@ -210,17 +210,14 @@ zpool status tank
 ```
 
 ### Importing and exporting pools
-
 Export a pool before moving disks to another system:
 ```
 sudo zpool export tank
 ```
-
 On the new system, list pools that can be imported:
 ```
 sudo zpool import
 ```
-
 Import your pool:
 ```
 sudo zpool import tank
@@ -229,11 +226,8 @@ sudo zpool import tank
 ### Deduplication
 
 ZFS supports block-level deduplication, but you should treat it as an advanced feature:
-
 requires a lot of RAM (rule of thumb: at least ~1–1.5 GiB RAM per TiB of logical data, sometimes more);
-
 if you don’t have enough RAM, performance can fall off a cliff.
-
 Enable dedup on a dataset:
 ```
 sudo zfs set dedup=on tank/data
@@ -241,8 +235,6 @@ zfs get dedup tank/data
 ```
 
 My personal rule: only enable dedup when you have a clear use case (e.g., many identical VM images) and enough RAM.
-
-
 Or import all known pools:
 ```
 sudo zpool import -a
