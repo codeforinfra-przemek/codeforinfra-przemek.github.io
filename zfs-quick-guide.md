@@ -61,20 +61,21 @@ sudo zpool destroy tank
 
 ### Vdev
 
-
 A vdev is a building block inside a pool:
 - a single disk,
 - a mirror group,
 - or a RAIDZ group.
 The pool stripes data across vdevs, and each vdev handles its own redundancy.
 Example: pool with a RAIDZ1 vdev:
+
 ```
 sudo zpool create tank raidz1 \
   /dev/disk/by-id/ata-DISK1-ID \
   /dev/disk/by-id/ata-DISK2-ID \
   /dev/disk/by-id/ata-DISK3-ID
-
-#Later you can add another vdev to grow the pool:
+```
+Later you can add another vdev to grow the pool:
+```
 sudo zpool add tank raidz1 \
   /dev/disk/by-id/ata-DISK4-ID \
   /dev/disk/by-id/ata-DISK5-ID \
@@ -86,11 +87,9 @@ A dataset is like a sub-filesystem inside the pool. Each dataset can have its ow
 ```
 #Create a dataset:
 sudo zfs create tank/data
-
 #List datasets:
 zfs list
 zfs get mountpoint tank/data
-
 #Change mountpoint:
 sudo zfs set mountpoint=/data tank/data
 ```
@@ -103,7 +102,6 @@ self-healing: on a redundant vdev (mirror/RAIDZ), if a checksum fails, ZFS reads
 ```
 #You check health mainly via:
 zpool status -v
-
 #Regular scrubs walk the entire pool and verify checksums:
 sudo zpool scrub tank
 zpool status tank
@@ -153,6 +151,7 @@ sudo zfs set atime=off tank/data
 ```
 
 ### Compression
+
 Compression is one of the easiest wins in ZFS.
 Enable it on a dataset (recommended lz4):
 ```
