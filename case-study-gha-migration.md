@@ -1,8 +1,3 @@
----
-layout: page
-title: "Case study: migracja pipeline’ów CI na GitHub Actions"
----
-
 ## Kontekst
 
 [krótko: jaki system, jaki problem biznesowy / techniczny]
