@@ -35,8 +35,6 @@ The `Ansible-pilot` repository is my personal "pilot cockpit" for Ansible:
 
 All of these are documented as short, copy-paste friendly snippets in the `README.md` of the repo.
 
----
-
 # Ansiblepilot
     Based on: https://www.ansiblepilot.com/
     Personal cheat sheet for common Ansible tasks and troubleshooting.
