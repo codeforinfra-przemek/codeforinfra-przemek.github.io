@@ -1,4 +1,3 @@
-```markdown
 ---
 layout: default
 title: "Ansible – quick guide & pilot repo"
