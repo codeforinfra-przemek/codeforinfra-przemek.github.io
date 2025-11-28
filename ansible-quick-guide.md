@@ -11,6 +11,7 @@ permalink: /ansible-quick-guide.html
 This page is a short overview of how I use Ansible in my homelab and day-to-day automation work.  
 All concrete commands and examples live in a dedicated repository:
 
+➡️ **Course:** Whole idea and knowledge was base on course: https://www.youtube.com/watch?v=goclfp6a2IQ&list=PL2_OBreMn7FqZkvMYt6ATmgC0KAGGJNAN prepared by Jeff Geerling
 ➡️ **Repo:** [codeforinfra-przemek/Ansible-pilot](https://github.com/codeforinfra-przemek/Ansible-pilot)  
 ➡️ **Full cheat sheet:** see the [`README.md`](https://github.com/codeforinfra-przemek/Ansible-pilot/blob/main/README.md)
 
