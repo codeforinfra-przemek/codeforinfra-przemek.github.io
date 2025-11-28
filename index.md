@@ -32,6 +32,7 @@ Here you will find:
 
 - [Django / Kubernetes / Helm](django-k8s-helm.md)
 - [Ansible – quick guide & pilot repo](ansible-quick-guide.md)
+- [Ansible desired state – controller configuration as code](ansible-desired-state.md)
 
 ### Storage
 
