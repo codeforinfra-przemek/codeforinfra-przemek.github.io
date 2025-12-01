@@ -40,8 +40,8 @@ Here you will find:
 
 ### Other
 
-- [Case study: CI pipeline migration to GitHub Actions - working on....](case-study-gha-migration.md)
-- [Deep-dive: Observability in Kubernetes - working on...](deep-dive-observability-k8s.md)
+- [Case study: CI pipeline migration to GitHub Actions - in progress....](case-study-gha-migration.md)
+- [Deep-dive: Observability in Kubernetes - in progress...](deep-dive-observability-k8s.md)
 
 ---
 
