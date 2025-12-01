@@ -225,6 +225,7 @@ Look for:
 - events mentioning failing readiness/liveness probes,
 - any recurring restarts.
 If the pod is not ready because it can’t reach something by hostname (DB, external API, etc.), this is a hint that DNS may be involved.
+
 2. Test from inside the cluster
 Instead of testing from your laptop, run a temporary debug pod inside the cluster and see if basic DNS works:
 ```
@@ -243,6 +244,7 @@ nslookup google.com || echo "Failed to resolve external name"
 curl -v http://djnago-k8s.web.svc.cluster.local
 ```
 If even kubernetes.default.svc.cluster.local cannot be resolved, the problem is very likely with cluster DNS (CoreDNS or equivalent), not with your Django app.
+
 3. Check DNS/system pods in kube-system
 On most local clusters (kind, minikube, k3d, etc.), DNS is provided by CoreDNS.
 Check its status:
@@ -264,8 +266,10 @@ Common issues you might see:
 - upstream DNS server not reachable,
 - misconfigured stubDomains or upstreamNameservers,
 - network/DNS blocked by local VPN or firewall.
+
 4. Check node DNS configuration (especially on laptops / VPN)
   On local setups, the cluster often relies on the node’s /etc/resolv.conf.
+
 5. Re-test the application
 Once CoreDNS is healthy and DNS resolution from inside the cluster works:
 ```
