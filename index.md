@@ -31,6 +31,7 @@ Here you will find:
 ### Platform / Backend
 
 - [Django / Kubernetes / Helm](django-k8s-helm.md)
+- [Django / Kubernetes / Tshoot and project setup](django-k8s-tshoot-and-setup.md)
 - [Ansible – quick guide & pilot repo](ansible-quick-guide.md)
 - [Ansible desired state – controller configuration as code](ansible-desired-state.md)
 
