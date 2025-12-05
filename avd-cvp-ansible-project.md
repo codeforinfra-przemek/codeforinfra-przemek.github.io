@@ -2,6 +2,7 @@
 layout: default
 title: "AVD / CVP / Ansible – projekt automatyzacji"
 permalink: /avd-cvp-ansible-project.html
+published: false
 ---
 
 [← Back to index](/)
