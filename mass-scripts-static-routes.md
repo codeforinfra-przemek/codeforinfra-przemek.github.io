@@ -2,6 +2,7 @@
 layout: default
 title: "Masowe skrypty – zarządzanie statycznymi trasami"
 permalink: /mass-scripts-static-routes.html
+published: false
 ---
 
 [← Back to index](/)
