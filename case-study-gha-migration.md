@@ -2,6 +2,7 @@
 layout: default
 title: "Case study: migracja pipeline’ów CI na GitHub Actions"
 permalink: /case-study-gha-migration.html
+published: false
 ---
 
 [← Back to index](/)
