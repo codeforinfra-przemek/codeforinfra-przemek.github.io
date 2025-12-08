@@ -2,3 +2,21 @@
 ---
 
 @import "{{ site.theme }}";
+
+/* Draft / in-progress items on index */
+
+.draft {
+  color: #999999;
+  font-style: italic;
+  cursor: not-allowed;
+}
+
+.draft::before {
+  content: "⏳ ";
+}
+
+/* (opcjonalnie) trochę miejsca między wpisami listy */
+
+.main-content ul li {
+  margin-bottom: 0.25rem;
+}
