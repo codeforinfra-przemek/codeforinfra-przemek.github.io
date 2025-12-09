@@ -22,12 +22,11 @@ Here you will find:
 
 ### Networking / Automation
 
-- [AVD / CVP / Ansible Project - in progress....](avd-cvp-ansible-project.md)
-- [DiffSync & Nautobot – models and synchronization - in progress....](diffsync-nautobot-models-sync.md)
-- [Mass scripts and static routes - in progress....](mass-scripts-static-routes.md)
-- [Migration to Catalyst Center - in progress....](catalyst-center-migration.md)
-- [Config generator for NOC (legacy - in progress....)](config-generator-noc.md)
-
+ - <span class="draft">AVD / CVP / Ansible Project - in progress....</span>
+- <span class="draft">DiffSync & Nautobot – models and synchronization - in progress....</span>
+- <span class="draft">Mass scripts and static routes - in progress....</span>
+- <span class="draft">Migration to Catalyst Center - in progress....</span>
+- <span class="draft">Config generator for NOC (legacy - in progress....)</span>
 ### Platform / Backend
 
 - [Django / Kubernetes / Helm](django-k8s-helm.md)
