@@ -25,6 +25,7 @@ Core principles
 - Optimize the whole: Look at the entire development process to ensure all parts work together seamlessly, rather than focusing on optimizing individual pieces in isolation. 
 
 <img width="640" height="426" alt="image" src="https://github.com/user-attachments/assets/916e55dd-08be-419f-9035-872a0817d9f7" />---
+
 The seven wastes in Lean Software Development, adapted from manufacturing, are Partially Done Work, Extra Features, Relearning, Handoffs, Delays, Task Switching, and Defects, all representing activities that consume resources but don't add customer value, with goals to streamline processes, enhance quality, and deliver faster by eliminating these inefficiencies. 
 Here's a breakdown of each waste:
 - Partially Done Work (Inventory): Unfinished features or code that isn't deliverable, tying up resources and adding complexity without value.
