@@ -53,4 +53,12 @@ Add:
 
 ## Demo:
 - repo: https://github.com/NetCoreTemplates/empty  (random dotnet repo)
-- build using devops azure
+- build using devops azure, faced problem with:
+`##[error]No hosted parallelism has been purchased or granted. To request a free parallelism grant, please fill out the following form https://aka.ms/azpipelines-parallelism-request` <- as my subscription not support devops azure: https://help.pluralsight.com/hc/en-us/articles/24392988447636-Azure-cloud-sandbox
+ so i need agent setup on my local pc. I tried and got:
+```
+VS30063: You are not authorized to access https://dev.azure.com.
+Failed to find pool name. Try again or ctrl-c to quit
+``` 
+So this mean that i will be no able to use azure devops using pluralsight lab account.
+ 
