@@ -37,3 +37,20 @@ Here's a breakdown of each waste:
 - Delays (Waiting): Idle time waiting for input, approvals, feedback, or other blocked activities, causing loss of momentum.
 - Task Switching (Motion): Interruptions or context-switching between multiple tasks, reducing focus and effectiveness.
 - Defects (Defects): Bugs and errors that require rework, testing, and debugging, consuming significant time and resources. 
+
+
+Add:
+- multitasking is not working - you loose 40% of effectivnes on multitasking.
+- Paretto 80/20.
+- If it hurt, you must do it.
+
+## Understanding What DevOps Replaces
+
+- Build:
+  - force better version control model
+  - poka-yoke
+  - decision alone cures serveral problems
+
+## Demo:
+- repo: https://github.com/NetCoreTemplates/empty  (random dotnet repo)
+- build using devops azure
