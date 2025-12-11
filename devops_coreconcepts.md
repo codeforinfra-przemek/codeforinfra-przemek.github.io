@@ -1,4 +1,4 @@
----
+<img width="640" height="426" alt="image" src="https://github.com/user-attachments/assets/916e55dd-08be-419f-9035-872a0817d9f7" />---
 layout: default
 title: "Ansible desired state – controller configuration as code"
 permalink: /ansible-desired-state.html
@@ -23,3 +23,14 @@ Core principles
 - Deliver fast: Accelerate the delivery of software to get feedback and value to the customer sooner.
 - Respect people: Empower the team, encourage communication, and involve everyone in solving problems.
 - Optimize the whole: Look at the entire development process to ensure all parts work together seamlessly, rather than focusing on optimizing individual pieces in isolation. 
+
+<img width="1416" height="748" alt="image" src="https://blog.triaster.co.uk/blog/what-are-the-7-wastes-killing-business" />---
+The seven wastes in Lean Software Development, adapted from manufacturing, are Partially Done Work, Extra Features, Relearning, Handoffs, Delays, Task Switching, and Defects, all representing activities that consume resources but don't add customer value, with goals to streamline processes, enhance quality, and deliver faster by eliminating these inefficiencies. 
+Here's a breakdown of each waste:
+- Partially Done Work (Inventory): Unfinished features or code that isn't deliverable, tying up resources and adding complexity without value.
+- Extra Features (Overproduction): Building features users don't need or use, increasing complexity and maintenance costs.
+- Relearning (Extra Processing): Wasted time relearning requirements, designs, or code because of poor information flow or documentation.
+- Handoffs (Transportation): Passing work between teams or individuals, leading to miscommunication, delays, and lost information.
+- Delays (Waiting): Idle time waiting for input, approvals, feedback, or other blocked activities, causing loss of momentum.
+- Task Switching (Motion): Interruptions or context-switching between multiple tasks, reducing focus and effectiveness.
+- Defects (Defects): Bugs and errors that require rework, testing, and debugging, consuming significant time and resources. 
