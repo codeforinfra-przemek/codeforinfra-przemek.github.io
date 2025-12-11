@@ -1,4 +1,4 @@
----
+<img width="1416" height="748" alt="image" src="https://github.com/user-attachments/assets/cab51012-1670-4f43-a267-6fab18bc45f1" />---
 layout: default
 title: "Ansible desired state – controller configuration as code"
 permalink: /ansible-desired-state.html
@@ -13,4 +13,4 @@ Lean software development is an agile methodology that focuses on delivering cus
 - Jidoka
 - Andon - anyone can stop prod to fix proces
 
-![Uploading image.png…]()
+https://wp.spaceo.ca/wp-content/uploads/2024/08/What-is-Lean-Software-Development-2x.jpg
