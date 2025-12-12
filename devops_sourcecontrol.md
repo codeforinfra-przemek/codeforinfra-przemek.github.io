@@ -145,6 +145,9 @@ git log --graph --oneline
 git remote -v
 git push origin main
 git pull origin main
+git tag -a v1.0.1 -m 'Payload comparison bug corrected'
+git tag
+
 ```
 
 
