@@ -139,8 +139,13 @@ git checkout --ours path/to/file
 git add path/to/file
 ```
 
-
-
+### Additional useful command:
+```
+git log --graph --oneline
+git remote -v
+git push origin main
+git pull origin main
+```
 
 
 
