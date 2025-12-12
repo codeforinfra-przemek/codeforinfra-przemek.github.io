@@ -61,4 +61,9 @@ VS30063: You are not authorized to access https://dev.azure.com.
 Failed to find pool name. Try again or ctrl-c to quit
 ``` 
 So this mean that i will be no able to use azure devops using pluralsight lab account.
+
+## Test:
+- test have: expectation, obervation, reconciliation
+- first class artifact - artifact that want be dropped under presure (like version control)
+- Bg goals: Build, Test, Deployment 
  
