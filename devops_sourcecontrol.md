@@ -102,10 +102,11 @@ When both branches have new commits (diverged).
 Combines histories.
 
 Command:
-`git merge feature-branch`
-
+```
+git merge feature-branch
 # or force a merge commit even if FF is possible:
 git merge --no-ff feature-branch
+```
 
 3) Squash merge (combine all feature commits into one)
 
