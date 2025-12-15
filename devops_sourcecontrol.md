@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Ansible desired state – controller configuration as code"
+title: "DevOps: SourceControl"
 permalink: /ansible-desired-state.html
 ---
 
