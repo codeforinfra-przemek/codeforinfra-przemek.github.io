@@ -93,3 +93,31 @@ docker-compose exec db bash
 mysql --version
 docker-compose ps -a
 ```
+
+# DevOps Containerization and Orchestration: Code Your Infrastructure with Kubernetes
+
+Base:
+```
+minikube version
+kubectl version --short
+kubectl config get-contexts
+minikube dashboard
+kubectl get deployments
+kubectl create deployment web1 --image=nginx:1.24.0-alpine-slim
+kubectl get deployments
+kubectl delete deployment web1
+kubectl get deployments
+kubectl create namespace app-cluster
+kubectl get namespaces
+code .
+kubectl apply -f /home/pslearner/lab-resources/web1.yaml
+kubectl apply -f /home/pslearner/lab-resources/web1-service.yaml
+kubectl get services -n app-cluster
+minikube service web1-service --url -n app-cluster
+```
+
+
+
+
+
+
