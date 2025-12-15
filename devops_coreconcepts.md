@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Ansible desired state – controller configuration as code"
+title: "Devops CoreConcepts"
 permalink: /ansible-desired-state.html
 ---
 
