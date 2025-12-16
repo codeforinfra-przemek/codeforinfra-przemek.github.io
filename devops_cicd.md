@@ -84,3 +84,39 @@ git commit -m "First commit"
 git push
 ```
 ## Implement a Deploy Stage
+
+`cp ci_files/gitlab-ci-deploy.yml .gitlab-ci.yml`
+cat .gitlab-ci.yml:
+```
+image: ubuntu/apache2
+
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  WEBROOT: /var/www/html
+  APACHE_CONF_DIR: /etc/apache2/sites-available/
+
+build:
+  stage: build
+  script:
+    - mkdir -p ${WEBROOT}
+    - cp index.html ${WEBROOT}/index.html
+    - cp style.css ${WEBROOT}/style.css
+    - echo "DocumentRoot ${WEBROOT}" >> ${APACHE_CONF_DIR}/000-default.conf
+
+test:
+  stage: test
+  script:
+    - curl -s ${WEBROOT}/index.html > /dev/null || echo "Test failed"
+    - cat ${WEBROOT}/index.html | grep "<h1>" > /dev/null || echo "Test failed"
+    - curl -s ${WEBROOT}/style.css > /dev/null || echo "Test failed"
+
+deploy:
+  stage: deploy
+  script:
+    - cp index.html ${APACHE_CONF_DIR}/index.conf
+    - service apache2 restart
+```
