@@ -1,3 +1,9 @@
+---
+layout: default
+title: "Devops CoreConcepts"
+permalink: /ansible-desired-state.html
+---
+
 # DevOps Continuous Integration and Delivery: Setting up a CI/CD Pipeline
 
 ## Verify the Lab Environment
