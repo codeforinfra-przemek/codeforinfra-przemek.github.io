@@ -74,8 +74,11 @@ git log branch1..branch2 --oneline
 ### Submodules:
 
 - dependecies between projects - base way is to use packet manager like PIP, git give us option to "Nest git project". We can add subproject to out git project using: `git submodule add <gitlink>` then you can go into submodule dir and 'git pull` if there are new commits or change brach.
-- `git submodule update --remote--recursive` pull all new staff for all submodels
+- `git submodule update --remote--recursive` pull all new staff for all submodels. Keep in mind that submodel are static and git will not pull there automatically or change brach ect. You need to do it. 
 
+### LFS:
 
+- git never forget so if we have big file it become bigger and bigger.
+- `git lfs track` - git will downlaod those big file only when we need them. 
 
 
