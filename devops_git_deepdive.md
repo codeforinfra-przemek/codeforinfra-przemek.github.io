@@ -80,5 +80,7 @@ git log branch1..branch2 --oneline
 
 - git never forget so if we have big file it become bigger and bigger.
 - `git lfs track` - git will downlaod those big file only when we need them. 
-
-
+- .gitattributes define what file lfs should track.
+- `git cat-file -p <commit>` - you can see what lfs do, replace file with reference to a file. And if file is needed download it. 
+- insted of lfs we can use a shallow clone: `git clone <link> --depth=12" and we will use last 12 commits.
+- insted we can use also `Partial clones` or `Prefetching`
