@@ -11,8 +11,8 @@ permalink: /ansible-desired-state.html
 - Play with docker for free labs: https://labs.play-with-docker.com/
 - multipass canonical -  quick get virtyal/vm ubuntu or docker for labs
 ### Architecture
-[https://cdn.hashnode.com/res/hashnode/image/upload/v1679764110121/5d0c2ae1-9762-404d-924d-53db207b9d2f.png?auto=compress,format&format=webp
-](https://tarangsharma.hashnode.dev/docker-engine-architecture)
+
+<img width="700" height="500" alt="image" src="https://github.com/user-attachments/assets/3d1c3693-0290-4a0a-bce3-13742cff9562" />
 
 - client/server architecture - we send post to API on server.
 - OCI - Open Container Initiative - standards for low level container images
