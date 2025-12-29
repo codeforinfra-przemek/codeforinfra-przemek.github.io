@@ -4,13 +4,15 @@ title: "DevOps: Docker"
 permalink: /ansible-desired-state.html
 ---
 
-## Docker Deep Dive
-### Getting started
+# Docker Deep Dive
+
+### Getting started:
 - Docker Account to push images
 - Docker Desktop on Windows (better is WSL)
 - Play with docker for free labs: https://labs.play-with-docker.com/
 - multipass canonical -  quick get virtyal/vm ubuntu or docker for labs
-### Architecture
+- 
+### Architecture:
 
 <img width="700" height="500" alt="image" src="https://github.com/user-attachments/assets/3d1c3693-0290-4a0a-bce3-13742cff9562" />
 
@@ -23,4 +25,8 @@ permalink: /ansible-desired-state.html
 - - control group control how man resources use containers on hosts,
 - - layered mounts - copy and write
 - Docker  - DockeAPI + containerd (liefcycle mgt) + low-level runtime (runc) for ACI
-- 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/13417a5e-e82a-4940-9fe4-e661d068147b" />
+
+### Images Masterclass:
+
+
