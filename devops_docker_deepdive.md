@@ -83,4 +83,8 @@ permalink: /ansible-desired-state.html
 - `docker stop <id>`
 - `docker exec <id> <command like cat filename>`
 - `docker rm $(docker ps -aq) -f
-- 
+
+
+### Building a Swarm
+
+
