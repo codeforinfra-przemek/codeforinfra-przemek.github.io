@@ -62,6 +62,7 @@ permalink: /ansible-desired-state.html
 - `docker build -t ddd2023:nodeweb <https://github...>` - wll load context files from git
 - `docker history ddd2023:nodeweb` - to check each layer
 - `docker inspect ddd2023:nodeweb` to see dockerfile
+
 #### Multistage builds: 
 
 <img width="1422" height="769" alt="image" src="https://github.com/user-attachments/assets/d3431332-4a20-41ed-89ac-972f92b1ceea" />
@@ -69,3 +70,17 @@ permalink: /ansible-desired-state.html
 - AS <name> give friendly name
 - 
 
+### Working with Containers:
+
+<img width="1402" height="777" alt="image" src="https://github.com/user-attachments/assets/0acbf374-aa32-4b3c-bb11-e1e4fc693b47" />
+
+- Pords wrap up container for scheduler purpose, so smallers unit is container
+- container is running instance of image
+- each container get his own Write/Read layer, so we can have multiple container of the same image. Container copy failes from images, and modify on r/w layer and not touch image itself <- Copy on Write. All changes are made to copy of file.
+- Container virtual OS resources.
+- `docker run -it <image> sh`
+- `docker run -d --name web <image>` - -d detach
+- `docker stop <id>`
+- `docker exec <id> <command like cat filename>`
+- `docker rm $(docker ps -aq) -f
+- 
