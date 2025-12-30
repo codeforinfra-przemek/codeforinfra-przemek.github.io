@@ -85,6 +85,30 @@ permalink: /ansible-desired-state.html
 - `docker rm $(docker ps -aq) -f
 
 
-### Building a Swarm
+### Building a Swarm:
 
+<img width="1396" height="782" alt="image" src="https://github.com/user-attachments/assets/1e552d3a-3d0d-43f0-b505-c5bc26ac80ab" />
 
+- clustering - take care of infrastrucuture
+- swarm - handle many docker nodes. We have singe engine node, or swarm. Leader is Manager, rest are Follower. Manager take care of certificate and encryption.
+- `docker swarm init` & `docker swarm joint-token manager` and save token. ssh to second docker and pass it: `docker swarm join --token...`
+- odd number are best (3,5,7)
+- to add workwer: `docker swarm join-token worker --rotate` and then pass on worker.
+- `docker node ls`
+- Orchestration - will handler big number of pods. 
+
+### Container Network:
+
+<img width="1130" height="457" alt="image" src="https://github.com/user-attachments/assets/121f44bf-3527-47dd-8c59-0c9f465b1cf5" />
+
+- Bridge netowkrking (default) on NAT. Bridge docker 0. Container on one bridge can talk to each other, but not to container on second bringe. L2 issolation, so we need to map ports. 
+
+<img width="1297" height="731" alt="image" src="https://github.com/user-attachments/assets/e6c08b4d-c355-48b3-9a73-dc4865ff4930" />
+<img width="1381" height="695" alt="image" src="https://github.com/user-attachments/assets/ae1e882b-b9cf-4edc-967a-755320d88c26" />
+
+- Multihost netowkr - single layer netowkr, all container can talk to each other, contianer to container only. We need map vlan to access world.
+
+<img width="1265" height="740" alt="image" src="https://github.com/user-attachments/assets/a62332e6-5663-46ad-a827-ba83f9c30433" />
+
+- MacVLAN - no bridge, no port mapping, all on wire, not for cloud. 
+  
