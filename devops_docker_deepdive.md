@@ -111,4 +111,32 @@ permalink: /ansible-desired-state.html
 <img width="1265" height="740" alt="image" src="https://github.com/user-attachments/assets/a62332e6-5663-46ad-a827-ba83f9c30433" />
 
 - MacVLAN - no bridge, no port mapping, all on wire, not for cloud. 
-  
+
+- `docker network ls`
+- `docker network inspect bridge` so we need to add mapping 80:8080 to access pod in our browser.
+- `docker network create -d overlay <name>` and it will create net for whole swarm. `docker service ls`
+
+#### Network Services: 
+
+<img width="1271" height="387" alt="image" src="https://github.com/user-attachments/assets/f1ff225e-7312-4225-8d19-29c882dd60d8" />
+
+- service discovery & loadbalancing.
+- every new service get name, names are registered with DNS, container use dns for service discovery.
+- 
+<img width="1193" height="711" alt="image" src="https://github.com/user-attachments/assets/f62fdc78-d318-4d28-9906-c55a172dfa3c" />
+
+- all contianer wrap in service. Container on different services cannot find itself. 
+
+<img width="686" height="386" alt="image" src="https://github.com/user-attachments/assets/7f164117-c708-4fa0-a52c-b202e353b74a" />
+
+### Persisten Data and Volumes:
+
+<img width="1659" height="544" alt="image" src="https://github.com/user-attachments/assets/373bd0a0-4e49-40fc-9cbe-2b9a19da734a" />
+
+### Docker Compose:
+
+- compose.yaml & `docker compose up &` and `docker comose down`/`docker compose start` and `docker compose ls`
+
+
+
+
