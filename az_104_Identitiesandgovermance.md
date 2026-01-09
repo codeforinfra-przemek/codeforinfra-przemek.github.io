@@ -117,5 +117,29 @@ az resource list --resource-group $rgName --output table
 <img width="1344" height="775" alt="image" src="https://github.com/user-attachments/assets/4eaf8564-b52e-4f26-9a2e-95cb0d970e7d" />
 <img width="1363" height="725" alt="image" src="https://github.com/user-attachments/assets/0a1b399f-4114-49e8-883c-2245e8df03d6" />
 
+## Identity:
+
+- identity and access managment (IAM)
+<img width="1367" height="748" alt="image" src="https://github.com/user-attachments/assets/55524e6c-4b9e-417c-9228-27e06a7d51b1" />
+<img width="1360" height="778" alt="image" src="https://github.com/user-attachments/assets/07dfeace-6edd-4513-8805-0c6389fef9b9" />
+<img width="1292" height="761" alt="image" src="https://github.com/user-attachments/assets/6c6a80f5-cb73-4871-9769-e98b9b2bb3b9" />
+<img width="1409" height="645" alt="image" src="https://github.com/user-attachments/assets/c46ef49b-13f4-4946-aa28-ef4df43f7e7b" />
+
+## Access Control:
+
+<img width="1360" height="722" alt="image" src="https://github.com/user-attachments/assets/a6fbac42-337e-479c-8dc8-c8ab0f7db69b" />
+<img width="1360" height="787" alt="image" src="https://github.com/user-attachments/assets/a57ea741-0b94-4c81-b46d-5455abf78b8d" />
+<img width="1372" height="787" alt="image" src="https://github.com/user-attachments/assets/5605eaf3-95c4-4b62-ae3f-e958676abad8" />
+<img width="1354" height="736" alt="image" src="https://github.com/user-attachments/assets/583dbf70-eaaf-4e9e-bb22-89a880d79be1" />
+<img width="1347" height="776" alt="image" src="https://github.com/user-attachments/assets/7e2097ba-4736-493f-964d-414a573220b7" />
+
+
+
+
+
+
+
+
+
 
 
