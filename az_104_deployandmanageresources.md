@@ -34,6 +34,11 @@ Y
 <img width="1270" height="701" alt="image" src="https://github.com/user-attachments/assets/b92cdd8b-a041-4439-b3e2-14865ce498cd" />
 <img width="1394" height="782" alt="image" src="https://github.com/user-attachments/assets/07a4bcb8-09ac-4014-9c5a-71a40e509a80" />
 
+## Creating App Service Plan
+
+<img width="1391" height="804" alt="image" src="https://github.com/user-attachments/assets/f32e79ed-a567-4ad9-95f5-96c78cfb1b8f" />
+<img width="1397" height="775" alt="image" src="https://github.com/user-attachments/assets/ff155702-b7e5-4ff2-9cb8-dee28e4d3b07" />
+<img width="1399" height="773" alt="image" src="https://github.com/user-attachments/assets/b0a214e0-5b2d-4391-bb0b-d3293f412f8b" />
 
 
 
