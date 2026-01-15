@@ -40,5 +40,92 @@ Y
 <img width="1397" height="775" alt="image" src="https://github.com/user-attachments/assets/ff155702-b7e5-4ff2-9cb8-dee28e4d3b07" />
 <img width="1399" height="773" alt="image" src="https://github.com/user-attachments/assets/b0a214e0-5b2d-4391-bb0b-d3293f412f8b" />
 
+## Introduction to Azure Containers
 
+```
+$acrName = az acr list -o tsv --query '[].name'
+az acr build `
+  --image sample/hostnameapp:v1 `
+  --registry $acrName `
+  --file ./Dockerfile .
+az acr run `
+  --registry $acrName `
+  --cmd '$Registry/sample/hostnameapp:v1' /dev/null
+
+````
+<img width="1371" height="766" alt="image" src="https://github.com/user-attachments/assets/3690bd3b-5ced-494a-82de-36e619c005bf" />
+
+### Build and Run a Container Using Azure ACR Tasks
+
+```
+# az acr create --resource-group 425-b0a83ada-build-and-run-a-container-using-azure \
+#   --name acrbuildcontainer11 --sku Basic --admin-enabled true
+sub=$(az account show --query id -o tsv)
+rg=$(az group list --query '[0].name' -o tsv)
+acrName="acrbuildcontainer11"
+location=$(az group show --subscription "$sub" -n "$rg" --query location -o tsv)
+az acr create \
+  --subscription "$sub" \
+  --resource-group "$rg" \
+  --location "$location" \
+  --name "$acrName" \
+  --sku Basic \
+  --admin-enabled true
+
+cloud [ ~ ]$ cd $HOME
+cloud [ ~ ]$ cd clouddrive
+cloud [ ~/clouddrive ]$ echo "FROM hello-world" > Dockerfile
+# az acr build --image sample/hello-world:v1 --registry acrbuildcontainer11 \
+#  --file Dockerfile .
+az acr build \
+  --subscription "$sub" \
+  --registry "$acrName" \
+  --image sample/hello-world:v1 \
+  --file Dockerfile \
+  .
+az acr run \
+  --subscription "$sub" \
+  --registry "$acrName" \
+  --cmd '$Registry/sample/hello-world:v1' \
+  /dev/null
+```
+### Create Web App from Docker Container in Azure
+
+```
+rg=$(az group list --query '[0].name' -o tsv)
+acr="acrbuildcontainer11"
+sub=$(az account show --query id -o tsv)
+
+az acr create \
+  --subscription "$sub" \
+  --resource-group "$rg" \
+  --location "$location" \
+  --name "$acr" \
+  --sku Basic \
+  --admin-enabled true
+
+cd $HOME
+cd clouddrive  # this way we enter fileshare we created to work on this.
+git clone --branch js-docker https://github.com/linuxacademy/content-AZ-104-Microsoft-Azure-Administrator.git ./js-docker
+cd js-docker/
+az acr build --image js-docker:v1 --registry $acr --file Dockerfile .
+#there was problem with dockerfile so we change it to:
+FROM node:18-alpine
+
+WORKDIR /src
+COPY . .
+RUN npm install
+
+EXPOSE 8080
+CMD ["node", "./app.js"]
+az acr run \
+  --subscription "$sub" \
+  --registry "$acr" \
+  --cmd '$Registry/sample/hello-world:v1' \
+  /dev/null
+
+```
+### Using Container App:
+
+<img width="1378" height="768" alt="image" src="https://github.com/user-attachments/assets/e15bb518-e16e-442d-b11d-68d21cd400ed" />
 
