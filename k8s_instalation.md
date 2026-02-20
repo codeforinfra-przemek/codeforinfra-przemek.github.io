@@ -405,3 +405,4 @@ kubectl get pods --all-namespaces
 #Let's set to the kubectl context back to our local custer
 kubectl config use-context kubernetes-admin@kubernetes
 ```
+
