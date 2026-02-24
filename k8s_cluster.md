@@ -1,0 +1,317 @@
+<img width="1373" height="215" alt="image" src="https://github.com/user-attachments/assets/fb2a1b41-35f8-4d72-937a-1b34331aabfd" /><img width="1377" height="214" alt="image" src="https://github.com/user-attachments/assets/f90a2772-517d-46c1-8e35-72a7a76d274c" /><img width="950" height="221" alt="image" src="https://github.com/user-attachments/assets/448f5c94-6b26-416a-b9d3-62892c89f18d" />---
+layout: default
+title: "Ansible desired state – controller configuration as code"
+permalink: /ansible-desired-state.html
+---
+
+[← Back to index](/)
+
+
+# Working with Your Kubernetes Cluster
+
+<img width="1388" height="770" alt="image" src="https://github.com/user-attachments/assets/7fa65f32-39ca-4322-ac92-1c6b892b8eaf" />
+<img width="1317" height="756" alt="image" src="https://github.com/user-attachments/assets/3f15fe81-77a7-42fc-b52a-29f82c7ac158" />
+<img width="1403" height="735" alt="image" src="https://github.com/user-attachments/assets/eae19849-1847-4e73-a0cb-c15b8c2bb04b" />
+
+```
+#Log into the control plane node c1-cp1/master node c1-master1 
+ssh aen@c1-cp1
+
+
+#Listing and inspecting your cluster...helpful for knowing which cluster is your current context
+kubectl cluster-info
+
+
+#One of the most common operations you will use is get...
+#Review status, roles and versions
+kubectl get nodes
+
+
+#You can add an output modifier to get to *get* more information about a resource
+#Additional information about each node in the cluster. 
+kubectl get nodes -o wide
+
+
+#Let's get a list of pods...but there isn't any running.
+kubectl get pods 
+
+
+#True, but let's get a list of system pods. A namespace is a way to group resources together.
+kubectl get pods --namespace kube-system
+
+
+#Let's get additional information about each pod. 
+kubectl get pods --namespace kube-system -o wide
+
+
+#Now let's get a list of everything that's running in all namespaces
+#In addition to pods, we see services, daemonsets, deployments and replicasets
+kubectl get all --all-namespaces | more
+
+
+#Asking kubernetes for the resources it knows about
+#Let's look at the headers in each column. Name, Alias/shortnames, API Version 
+#Is the resource in a namespace, for example StorageClass isn't and is available to all namespaces and finally Kind...this is the object type.
+kubectl api-resources | more
+
+
+#You'll soon find your favorite alias
+kubectl get no
+
+
+#We can easily filter using group
+kubectl api-resources | grep pod
+
+
+#Explain an indivdual resource in detail
+kubectl explain pod | more 
+kubectl explain pod.spec | more 
+kubectl explain pod.spec.containers | more 
+kubectl explain pod --recursive | more 
+
+
+
+#Let's take a closer look at our nodes using Describe
+#Check out Name, Taints, Conditions, Addresses, System Info, Non-Terminated Pods, and Events
+kubectl describe nodes c1-cp1 | more 
+kubectl describe nodes c1-node1 | more
+
+
+#Use -h or --help to find help
+kubectl -h | more
+kubectl get -h | more
+kubectl create -h | more
+
+
+#Ok, so now that we're tired of typing commands out, let's enable bash auto-complete of our kubectl commands
+sudo apt-get install -y bash-completion
+echo "source <(kubectl completion bash)" >> ~/.bashrc
+source ~/.bashrc
+kubectl g[tab][tab] po[tab][tab] --all[tab][tab]
+
+```
+
+<img width="1397" height="758" alt="image" src="https://github.com/user-attachments/assets/1ee2a14d-ce50-455b-9753-de41587bfb13" />
+
+<img width="1298" height="755" alt="image" src="https://github.com/user-attachments/assets/60f6a09b-0cd4-42f5-b292-da9b36efb663" />
+And so let's say we have a cluster and we're sitting at the command line with kubectl and we want to deploy an application into Kubernetes and we say kubectl apply. We then pass in some sort of manifest describing the objects that we want to create. So let's say we want to create a deployment. 
+That deployment will create a replica set, and that replicas set will create our pods based on the pod spec in the template, and kubectl is going to send our request into the API server. The API server is going to parse that information defined in the manifest and store those objects persistently in etcd. 
+The controller manager is watching for any new objects that it needs to know about. Since we define a deployment, it's going to start up a controller for that deployment, and that will create a replica set. 
+That replica set is going to create the required number of pods to support the configuration and write that information about the pods back to etcd. Now, the scheduler is watching etcd to see if etcd has any pods that haven't been assigned to nodes yet, and if it finds any unscheduled pods, it will schedule, or in other words, assign a pod to run on a particular node in a cluster. Each pod object is updated in etcd with the assigned node that it needs to run on. Now, no pods have started yet. What we have is the objects for the deployment, the replica set, and the pods with their scheduled node information all written into etcd. So how do the pods actually start?
+So how do the pods actually start? Well, the kubelets on the nodes are watching the API server asking, do you have any work? Do you have any work? 
+And if it finds a pod scheduled for that node, it's then going to send a message to the container runtime on that node to pull down the appropriate container images specified in that pod spec, and start the pod up on that node. 
+If that pod is a member of a service, then that service's information is updated in kube‑proxy on that node. This entire process is how pods get deployed inside of Kubernetes. In this example, we described a deployment. Similar processes exist for deploying other types of objects in Kubernetes where the workflow might vary slightly
+
+```
+#Log into the control plane node c1-cp1/master node c1-master1 
+ssh aen@c1-cp1
+
+
+#Deploying resources imperatively in your cluster.
+#kubectl create deployment, creates a Deployment with one replica in it.
+#This is pulling a simple hello-world app container image from a container registry.
+kubectl create deployment hello-world --image=psk8s.azurecr.io/hello-app:1.0
+
+
+#But let's deploy a single "bare" pod that's not managed by a controller...
+kubectl run hello-world-pod --image=psk8s.azurecr.io/hello-app:1.0
+
+
+#Let's see of the Deployment creates a single replica and also see if that bare pod is created. 
+#You should have two pods here...
+# - the one managed by our controller has a the pod template hash in it's name and a unique identifier
+# - the bare pod
+kubectl get pods
+kubectl get pods -o wide
+
+
+#Remember, k8s is a container orchestrator and it's starting up containers on Nodes.
+#Open a second terminal and ssh into the node that hello-world pod is running on.
+ssh aen@c1-node[XX]
+
+
+#When containerd is your container runtime, use crictl to get a listing of the containers running
+#Check out this for more details https://kubernetes.io/docs/tasks/debug-application-cluster/crictl
+sudo crictl --runtime-endpoint unix:///run/containerd/containerd.sock ps
+
+#Log out of the Node and back into the Control Plane node, c1-cp1
+exit
+
+
+#Back on c1-cp1, we can pull the logs from the container. Which is going to be anything written to stdout. 
+#Maybe something went wrong inside our app and our pod won't start. This is useful for troubleshooting.
+kubectl logs hello-world-pod
+
+
+#Starting a process inside a container inside a pod.
+#We can use this to launch any process as long as the executable/binary is in the container.
+#Launch a shell into the container. Callout that this is on the *pod* network.
+kubectl exec -it  hello-world-pod -- /bin/sh
+hostname
+ip addr
+exit
+
+
+#Remember that first kubectl create deployment we executed, it created a deployment for us.
+#Let's look more closely at that deployment
+#Deployments are made of ReplicaSets and ReplicaSets create Pods!
+kubectl get deployment hello-world
+kubectl get replicaset
+kubectl get pods
+
+
+#Let's take a closer look at our Deployment and it's Pods.
+#Name, Replicas, and Events. In Events, notice how the ReplicaSet is created by the deployment.
+#Deployments are made of ReplicaSets!
+kubectl describe deployment hello-world | more
+
+
+#The ReplicaSet creates the Pods...check out...Name, Controlled By, Replicas, Pod Template, and Events.
+#In Events, notice how the ReplicaSet create the Pods
+kubectl describe replicaset hello-world | more
+
+
+#Check out the Name, Node, Status, Controlled By, IPs, Containers, and Events.
+#In Events, notice how the Pod is scheduled, the container image is pulled, 
+#and then the container is created and then started.
+kubectl describe pod hello-world-[tab][tab] | more
+
+
+#For a deep dive into Deployments check out 'Managing Kubernetes Controllers and Deployments'
+#https://www.pluralsight.com/courses/managing-kubernetes-controllers-deployments
+
+
+#Expose the Deployment as a Service. This will create a Service for the Deployment
+#We are exposing our Service on port 80, connecting to an application running on 8080 in our pod.
+#Port: Internal Cluster Port, the Service's port. You will point cluster resources here.
+#TargetPort: The Pod's Service Port, your application. That one we defined when we started the pods.
+kubectl expose deployment hello-world \
+     --port=80 \
+     --target-port=8080
+
+
+#Check out the CLUSTER-IP and PORT(S), that's where we'll access this service, from inside the cluster.
+kubectl get service hello-world
+
+
+#We can also get that information from using describe
+#Endpoints are IP:Port pairs for each of Pods that that are a member of the Service.
+#Right now there is only one...later we'll increase the number of replicas and more Endpoints will be added.
+kubectl describe service hello-world
+
+
+#Access the Service inside the cluster
+curl http://$SERVCIEIP:$PORT
+
+
+#Access a single pod's application directly, useful for troubleshooting.
+kubectl get endpoints hello-world
+curl http://$ENDPOINT:$TARGETORT
+
+
+#Using kubectl to generate yaml or json for your deployments
+#This includes runtime information...which can be useful for monitoring and config management
+#but not as source mainifests for declarative deployments
+kubectl get deployment hello-world -o yaml | more 
+kubectl get deployment hello-world -o json | more 
+
+
+
+#Let's remove everything we created imperatively and start over using a declarative model
+#Deleting the deployment will delete the replicaset and then the pods
+#We have to delete the bare pod manually since it's not managed by a contorller. 
+kubectl get all
+kubectl delete service hello-world
+kubectl delete deployment hello-world
+kubectl delete pod hello-world-pod
+kubectl get all
+
+
+
+#Deploying resources declaratively in your cluster.
+#We can use apply to create our resources from yaml.
+#We could write the yaml by hand...but we can use dry-run=client to build it for us
+#This can be used a a template for move complex deployments.
+kubectl create deployment hello-world \
+     --image=psk8s.azurecr.io/hello-app:1.0 \
+     --dry-run=client -o yaml | more 
+
+
+#Let's write this deployment yaml out to file
+kubectl create deployment hello-world \
+     --image=psk8s.azurecr.io/hello-app:1.0 \
+     --dry-run=client -o yaml > deployment.yaml
+
+
+#The contents of the yaml file show the definition of the Deployment
+more deployment.yaml
+
+
+#Create the deployment...declaratively...in code
+kubectl apply -f deployment.yaml
+
+
+#Generate the yaml for the service
+kubectl expose deployment hello-world \
+     --port=80 --target-port=8080 \
+     --dry-run=client -o yaml | more
+
+
+#Write the service yaml manifest to file
+kubectl expose deployment hello-world \
+     --port=80 --target-port=8080 \
+     --dry-run=client -o yaml > service.yaml 
+
+
+#The contents of the yaml file show the definition of the Service
+more service.yaml 
+
+
+#Create the service declaratively
+kubectl apply -f service.yaml 
+
+
+#Check out our current state, Deployment, ReplicaSet, Pod and a Service
+kubectl get all
+
+
+#Scale up our deployment...in code
+vi deployment.yaml
+Change spec.replicas from 1 to 20
+     replicas: 20
+
+
+#Update our configuration with apply to make that code to the desired state
+kubectl apply -f deployment.yaml
+
+
+#And check the current configuration of our deployment...you should see 20/20
+kubectl get deployment hello-world
+kubectl get pods | more 
+
+
+#Repeat the curl access to see the load balancing of the HTTP request
+kubectl get service hello-world
+curl http://$SERVICEIP:PORT
+
+
+#We can edit the resources "on the fly" with kubectl edit. But this isn't reflected in our yaml. 
+#But this change is persisted in the etcd...cluster store. Change 20 to 30.
+kubectl edit deployment hello-world
+
+
+#The deployment is scaled to 30 and we have 30 pods
+kubectl get deployment hello-world
+
+
+#You can also scale a deployment using scale
+kubectl scale deployment hello-world --replicas=40
+kubectl get deployment hello-world
+
+
+#Let's clean up our deployment and remove everything
+kubectl delete deployment hello-world
+kubectl delete service hello-world
+kubectl get all
+
+```
