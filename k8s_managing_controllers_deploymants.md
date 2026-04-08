@@ -13,7 +13,6 @@ permalink: /ansible-desired-state.html
 
 ## Kube System:
 <img width="915" height="653" alt="image" src="https://github.com/user-attachments/assets/e9855951-285f-4eaf-95ac-93c7868876a1" />
-<img width="915" height="653" alt="image" src="https://github.com/user-attachments/assets/c7ad65dc-e280-4091-a499-a7cbbe91a6e4" /><img width="1373" height="215" alt="image" src="https://github.com/user-attachments/assets/fb2a1b41-35f8-4d72-937a-1b34331aabfd" /><img width="1377" height="214" alt="image" src="https://github.com/user-attachments/assets/f90a2772-517d-46c1-8e35-72a7a76d274c" /><img width="950" height="221" alt="image" src="https://github.com/user-attachments/assets/448f5c94-6b26-416a-b9d3-62892c89f18d" />
 ```
 #Log into the Control Plane Node to drive these demos.
 ssh aen@c1-cp1
