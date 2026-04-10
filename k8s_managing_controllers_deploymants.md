@@ -520,5 +520,242 @@ kubectl delete deployment hello-world
 kubectl delete service hello-world
 ```
 
+## Demonset:
+<img width="1343" height="698" alt="image" src="https://github.com/user-attachments/assets/dfc74fe9-e4cf-422f-8937-ab94d7c1c320" />
+<img width="1400" height="740" alt="image" src="https://github.com/user-attachments/assets/aa5bb51b-807a-4181-b765-5fc7c2d80615" />
+<img width="1265" height="761" alt="image" src="https://github.com/user-attachments/assets/d978c273-796f-4ac7-8fca-b7311d51f39a" />
+<img width="1221" height="748" alt="image" src="https://github.com/user-attachments/assets/db880a07-a2e3-4907-a2b0-2840248b6bae" />
 
+```
+ssh aen@c1-cp1
+cd ~/content/course/04/demos
+
+
+#Demo 1 - Creating a DaemonSet on All Nodes
+#We get one Pod per Node to run network services on that Node
+kubectl get nodes
+kubectl get daemonsets --namespace kube-system kube-proxy
+
+
+#Let's create a DaemonSet with Pods on each node in our cluster...that's NOT the Control Plane Node
+kubectl apply -f DaemonSet.yaml
+
+
+#So we'll get three since we have 3 workers and 1 Control Plane Node in our cluster and the Control Plane Node is set to run only system pods
+kubectl get daemonsets
+kubectl get daemonsets -o wide
+kubectl get pods -o wide
+
+
+#Callout, labels, Desired/Current Nodes Scheduled. Pod Status and Template and Events.
+kubectl describe daemonsets hello-world | more 
+
+
+#Each Pods is created with our label, app=hello-world, controller-revision-hash and a pod-template-generation
+kubectl get pods --show-labels
+
+
+#If we change the label to one of our Pods...
+MYPOD=$(kubectl get pods -l app=hello-world-app | grep hello-world | head -n 1 | awk {'print $1'})
+echo $MYPOD
+kubectl label pods $MYPOD app=not-hello-world --overwrite
+
+
+#We'll get a new Pod from the DaemonSet Controller
+kubectl get pods --show-labels
+
+#Let's clean up this DaemonSet
+kubectl delete daemonsets hello-world-ds
+kubectl delete pods $MYPOD
+
+
+
+#Demo 2 - Creating a DaemonSet on a Subset of Nodes
+#Let's create a DaemonSet with a defined nodeSelector
+kubectl apply -f DaemonSetWithNodeSelector.yaml
+
+
+#No pods created because we don't have any nodes with the appropriate label
+kubectl get daemonsets
+
+
+#We need a Node that satisfies the Node Selector
+kubectl label node c1-node1 node=hello-world-ns
+
+
+#Let's see if a Pod gets created...
+kubectl get daemonsets
+kubectl get daemonsets -o wide
+kubectl get pods -o wide
+
+#What's going to happen if we remove the label
+kubectl label node c1-node1 node-
+
+
+#It's going to terminate the Pod, examine events, Desired Number of Nodes Scheduled...
+kubectl describe daemonsets hello-world-ds
+
+
+#Clean up our demo
+kubectl delete daemonsets hello-world-ds
+
+
+
+#Demo 3 - Updating a DaemonSet
+#Deploy our v1 DaemonSet again
+kubectl apply -f DaemonSet.yaml
+
+
+#Check out our image version, 1.0
+kubectl describe daemonsets hello-world
+
+
+#Examine what our update stategy is...defaults to rollingUpdate and maxUnavailable 1
+kubectl get DaemonSet hello-world-ds -o yaml | more
+
+
+#Update our container image from 1.0 to 2.0 and apply the config
+diff DaemonSet.yaml DaemonSet-v2.yaml
+kubectl apply -f DaemonSet-v2.yaml
+
+
+#Check on the status of our rollout, a touch slower than a deployment due to maxUnavailable.
+kubectl rollout status daemonsets hello-world-ds
+
+
+#We can see our DaemonSet Container Image is now 2.0 and in the Events that it rolled out.
+kubectl describe daemonsets
+
+#we can see the new controller-revision-hash and also an updated pod-template-generation
+kubectl get pods --show-labels
+
+
+#Time to clean up our demos
+kubectl delete daemonsets hello-world-ds
+
+```
+### Job, Cron, jobs:
+<img width="1371" height="754" alt="image" src="https://github.com/user-attachments/assets/8edd0b80-d547-43f3-9380-7dfc817ab22e" />
+<img width="1328" height="732" alt="image" src="https://github.com/user-attachments/assets/d914b71a-7238-4bda-be3d-5d665836d6ba" />
+<img width="1358" height="740" alt="image" src="https://github.com/user-attachments/assets/4fb86099-4069-4281-a823-c1894ac3f054" />
+<img width="1351" height="748" alt="image" src="https://github.com/user-attachments/assets/6451ce04-788a-4890-a227-e925541ee25a" />
+
+```
+ssh aen@c1-cp1
+cd ~/content/course/04/demos/
+
+#Demo 1 - Executing tasks with Jobs, check out the file job.yaml
+#Ensure you define a restartPolicy, the default of a Pod is Always, which is not compatible with a Job.
+#We'll need OnFailure or Never, let's look at OnFailure
+kubectl apply -f job.yaml
+
+
+#Follow job status with a watch
+kubectl get job --watch
+
+
+#Get the list of Pods, status is Completed and Ready is 0/1
+kubectl get pods
+
+
+#Let's get some more details about the job...labels and selectors, Start Time, Duration and Pod Statuses
+kubectl describe job hello-world-job
+
+
+#Get the logs from stdout from the Job Pod
+kubectl get pods -l job-name=hello-world-job 
+kubectl logs PASTE_POD_NAME_HERE
+
+
+#Our Job is completed, but it's up to use to delete the Pod or the Job.
+kubectl delete job hello-world-job
+
+
+#Which will also delete it's Pods
+kubectl get pods
+
+
+
+
+#Demo 2 - Show restartPolicy in action..., check out backoffLimit: 2 and restartPolicy: Never
+#We'll want to use Never so our pods aren't deleted after backoffLimit is reached.
+kubectl apply -f job-failure-OnFailure.yaml
+
+
+#Let's look at the pods, enters a backoffloop after 2 crashes
+kubectl get pods --watch
+
+
+#The pods aren't deleted so we can troubleshoot here if needed.
+kubectl get pods 
+
+
+#And the job won't have any completions and it doesn't get deleted
+kubectl get jobs 
+
+#So let's review what the job did...Events, created...then deleted. Pods status, 3 Failed.
+kubectl describe jobs | more
+
+
+#Clean up this job
+kubectl delete jobs hello-world-job-fail
+kubectl get pods
+
+
+
+#Demo 3 - Defining a Parallel Job
+kubectl apply -f ParallelJob.yaml
+
+
+#10 Pods will run in parallel up until 50 completions
+kubectl get pods
+
+
+
+
+#We can 'watch' the Statuses with watch
+watch 'kubectl describe job | head -n 11'
+
+
+#We'll get to 50 completions very quickly
+kubectl get jobs
+
+
+#Let's clean up...
+kubectl delete job hello-world-job-parallel
+
+
+
+
+#Demo 5 - Scheduling tasks with CronJobs
+kubectl apply -f CronJob.yaml
+
+
+#Quick overview of the job and it's schedule
+kubectl get cronjobs
+
+
+#But let's look closer...schedule, Concurrency, Suspend,Starting Deadline Seconds, events...there's execution history
+kubectl describe cronjobs | more 
+
+
+#Get a overview again...
+kubectl get cronjobs
+
+
+#The pods will stick around, in the event we need their logs or other inforamtion. How long?
+kubectl get pods --watch
+
+
+#They will stick around for successfulJobsHistoryLimit, which defaults to three
+kubectl get cronjobs -o yaml
+
+
+#Clean up the job...
+kubectl delete cronjob hello-world-cron
+
+
+#Deletes all the Pods too...
+kubectl get pods 
+```
 
