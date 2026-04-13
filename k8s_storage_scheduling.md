@@ -33,7 +33,7 @@ EOF
 
 kubectl apply -f pv-demo.yaml
 ```
-
+```
 cat > pvc-demo.yaml <<'EOF'
 apiVersion: v1
 kind: PersistentVolumeClaim
