@@ -14,6 +14,7 @@ permalink: /ansible-desired-state.html
 ## Implement Kubernetes Persistent Storage Concepts and Management:
 
 <img width="1357" height="744" alt="image" src="https://github.com/user-attachments/assets/b6238601-3dcc-4269-9048-d66b744f2acb" />
+
 ```
 cat > pv-demo.yaml <<'EOF'
 apiVersion: v1
@@ -33,7 +34,6 @@ EOF
 kubectl apply -f pv-demo.yaml
 ```
 
-```
 cat > pvc-demo.yaml <<'EOF'
 apiVersion: v1
 kind: PersistentVolumeClaim
