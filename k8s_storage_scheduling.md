@@ -32,6 +32,7 @@ EOF
 
 kubectl apply -f pv-demo.yaml
 ```
+
 ```
 cat > pvc-demo.yaml <<'EOF'
 apiVersion: v1
@@ -49,12 +50,14 @@ EOF
 
 kubectl apply -f pvc-demo.yaml
 ```
+
 ```
 kubectl get pv
 kubectl get pvc
 kubectl describe pv pv-demo
 kubectl describe pvc pvc-demo
 ```
+
 ```
 apiVersion: v1
 kind: Pod
