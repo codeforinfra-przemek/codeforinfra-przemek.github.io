@@ -371,5 +371,71 @@ kubectl top pod demo-pod
 - limits = max allowed usage
 ```
 
+## Kubernetes Pod Scheduling Mechanisms:
+
+<img width="1360" height="773" alt="image" src="https://github.com/user-attachments/assets/ac06a1ac-e2b9-402f-8399-0935d8cf4553" />
+<img width="1355" height="729" alt="image" src="https://github.com/user-attachments/assets/bd689b4f-a9b6-414a-8bff-d81568d7698d" />
+<img width="1350" height="721" alt="image" src="https://github.com/user-attachments/assets/e1d97f19-661c-44d4-b686-73dcf5d66c2c" />
+<img width="1339" height="737" alt="image" src="https://github.com/user-attachments/assets/9cab313d-b774-439e-9e30-3a646106c7de" />
+
+```
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: webapp-pdb
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: webapp
+
+kubectl apply -f webapp-pdb.yaml
+kubectl get pdb
+kubectl describe pdb webapp-pdb
+```
+<img width="1361" height="739" alt="image" src="https://github.com/user-attachments/assets/5fc4e9ac-ed31-4511-a94e-86544294244d" />
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-balanced
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: webapp
+      containers:
+      - name: web
+        image: nginx
+
+kubectl apply -f webapp-balanced.yaml
+kubectl get deploy
+kubectl get pods -o wide
+kubectl describe deploy webapp-balanced
+
+Meaning:
+- replicas: 6 = run 6 pods
+- topologyKey: kubernetes.io/hostname = spread across different nodes
+- maxSkew: 1 = difference between nodes should not be more than 1 pod
+- whenUnsatisfiable: DoNotSchedule = if balanced placement is not possible, do not schedule extra pods
+- labelSelector app=webapp = rule applies to pods with label app=webapp
+```
+
+
+
+
 
 
