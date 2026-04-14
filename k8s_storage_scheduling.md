@@ -180,6 +180,195 @@ kubectl apply -f analytics-test.yaml
 <img width="1358" height="745" alt="image" src="https://github.com/user-attachments/assets/cd343d1c-21ee-4663-bc47-b30455ffaf18" />
 
 ```
+KUBERNETES QUICK SUMMARY
+
+1) NODE AFFINITY
+Used on Pods to control which nodes they prefer or require.
+
+Required node affinity:
+- Pod must run only on nodes matching the label.
+
+Example:
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: workload
+          operator: In
+          values:
+          - analytics
+
+Preferred node affinity:
+- Scheduler tries to place pod there, but it is not mandatory.
+
+Example:
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      preference:
+        matchExpressions:
+        - key: workload
+          operator: In
+          values:
+          - analytics
+
+Useful node label commands:
+kubectl get nodes --show-labels
+kubectl label node desktop-worker workload=analytics
+kubectl label node desktop-worker workload-
+
+--------------------------------------------------
+
+2) POD AFFINITY
+Used on Pods to schedule close to other pods.
+
+Pod affinity:
+- Place this pod on a node where matching pods already exist.
+
+Example:
+affinity:
+  podAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - backend
+      topologyKey: kubernetes.io/hostname
+
+Meaning:
+- Schedule this pod onto a node that already has a pod with label app=backend.
+
+Pod anti-affinity:
+- Keep this pod away from matching pods.
+
+Example:
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - frontend
+      topologyKey: kubernetes.io/hostname
+
+Meaning:
+- Do not schedule this pod on the same node as pods with app=frontend.
+
+Useful pod commands:
+kubectl get pods -o wide
+kubectl describe pod <pod-name>
+
+--------------------------------------------------
+
+3) RESOURCE REQUESTS AND LIMITS
+Set on containers.
+
+requests:
+- Minimum resources Kubernetes reserves for the container
+- Scheduler uses requests to decide placement
+
+limits:
+- Maximum resources container can use
+
+Example:
+resources:
+  requests:
+    cpu: "250m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+
+Meaning:
+- requests.cpu: reserve 0.25 CPU
+- limits.cpu: container can use up to 0.5 CPU
+- requests.memory: reserve 128Mi
+- limits.memory: container can use up to 256Mi
+
+Notes:
+- If memory exceeds limit, container may be killed (OOMKilled)
+- CPU over limit is throttled
+- Scheduler places pod based mostly on requests, not limits
+
+Useful commands:
+kubectl top nodes
+kubectl top pods
+kubectl describe pod <pod-name>
+
+--------------------------------------------------
+
+4) FULL EXAMPLE YAML
+apiVersion: v1
+kind: Pod
+metadata:
+  name: demo-pod
+  labels:
+    app: demo
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: workload
+            operator: In
+            values:
+            - analytics
+    podAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 50
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - backend
+          topologyKey: kubernetes.io/hostname
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 50
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - frontend
+          topologyKey: kubernetes.io/hostname
+  containers:
+  - name: nginx
+    image: nginx
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "128Mi"
+      limits:
+        cpu: "500m"
+        memory: "256Mi"
+
+--------------------------------------------------
+
+5) APPLY AND CHECK
+kubectl apply -f demo-pod.yaml
+kubectl get pods -o wide
+kubectl describe pod demo-pod
+kubectl top pod demo-pod
+
+--------------------------------------------------
+
+6) SIMPLE MEMORY TRICK
+- nodeAffinity = choose nodes
+- podAffinity = stay close to some pods
+- podAntiAffinity = stay away from some pods
+- requests = guaranteed reservation for scheduling
+- limits = max allowed usage
 ```
 
 
