@@ -114,5 +114,73 @@ kubectl apply -f demo-pvc.yaml
 kubectl get pvc
 kubectl describe pvc demo-pvc
 ```
+## Implement Advanced Pod Scheduling Techniques:
+
+<img width="1354" height="757" alt="image" src="https://github.com/user-attachments/assets/9bc929fb-c014-4140-952c-382b71f11aca" />
+<img width="1366" height="786" alt="image" src="https://github.com/user-attachments/assets/21a5437e-8619-4480-b2cd-fa24cb83ac68" />
+
+```
+kubectl taint nodes desktop-worker dedicated=analytics:NoSchedule
+kubectl describe node desktop-worker | grep Taints -A1
+
+kubectl taint nodes desktop-worker dedicated=analytics:NoSchedule-
+kubectl get nodes --show-labels
+kubectl label node desktop-worker workload=analytics
+kubectl taint nodes desktop-worker dedicated=analytics:NoSchedule
+kubectl label node desktop-worker workload=analytics
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analytics-app
+  template:
+    metadata:
+      labels:
+        app: analytics-app
+    spec:
+      nodeSelector:
+        workload: analytics
+      tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        value: "analytics"
+        effect: "NoSchedule"
+      containers:
+      - name: app
+        image: nginx
+
+kubectl apply -f analytics-app.yaml
+kubectl get pods -o wide
+kubectl describe pod <pod-name>
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: analytics-test
+spec:
+  nodeSelector:
+    workload: analytics
+  tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "analytics"
+    effect: "NoSchedule"
+  containers:
+  - name: nginx
+    image: nginx
+
+kubectl apply -f analytics-test.yaml
+```
+<img width="1358" height="731" alt="image" src="https://github.com/user-attachments/assets/f7a80b61-1194-4c08-9ab6-82c7fe048dba" />
+<img width="1358" height="745" alt="image" src="https://github.com/user-attachments/assets/cd343d1c-21ee-4663-bc47-b30455ffaf18" />
+
+```
+```
+
 
 
