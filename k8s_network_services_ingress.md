@@ -310,4 +310,441 @@ exit
 exit
 ```
 
-###
+## Configuring and Managing Application Access with Services:
+
+<img width="1185" height="726" alt="image" src="https://github.com/user-attachments/assets/ea8e991f-9f8b-4d63-a220-7709454d4765" />
+<img width="1369" height="730" alt="image" src="https://github.com/user-attachments/assets/00088626-9836-47cb-a90f-76fd47d0ad8b" />
+<img width="1288" height="598" alt="image" src="https://github.com/user-attachments/assets/9d29f51b-dc6e-49f1-8f5a-993bade4872b" />
+<img width="1430" height="771" alt="image" src="https://github.com/user-attachments/assets/bc95d4b5-53a1-4c89-be8f-b7524520eecd" />
+<img width="1434" height="778" alt="image" src="https://github.com/user-attachments/assets/1e0b7bdd-a18d-48d2-a840-18f1dd6a4f52" />
+<img width="1430" height="772" alt="image" src="https://github.com/user-attachments/assets/9e629183-9c0c-4fb1-814f-ad9cc43d6f4a" />
+
+### Service:
+```
+ssh aen@c1-cp1
+cd ~/content/course/03/demos/
+
+#1 - Exposing and accessing applications with Services on our local cluster
+#ClusterIP
+
+#Imperative, create a deployment with one replica
+kubectl create deployment hello-world-clusterip \
+    --image=psk8s.azurecr.io/hello-app:1.0
+
+
+#When creating a service, you can define a type, if you don't define a type, the default is ClusterIP
+kubectl expose deployment hello-world-clusterip \
+    --port=80 --target-port=8080 --type ClusterIP
+
+
+#Get a list of services, examine the Type, CLUSTER-IP and Port
+kubectl get service
+
+
+#Get the Service's ClusterIP and store that for reuse.
+SERVICEIP=$(kubectl get service hello-world-clusterip -o jsonpath='{ .spec.clusterIP }')
+echo $SERVICEIP
+
+
+#Access the service inside the cluster
+curl http://$SERVICEIP
+
+
+#Get a listing of the endpoints for a service, we see the one pod endpoint registered.
+kubectl get endpoints hello-world-clusterip
+kubectl get pods -o wide
+
+
+#Access the pod's application directly on the Target Port on the Pod, not the service's Port, useful for troubleshooting.
+#Right now there's only one Pod and its one Endpoint
+kubectl get endpoints hello-world-clusterip
+PODIP=$(kubectl get endpoints hello-world-clusterip -o jsonpath='{ .subsets[].addresses[].ip }')
+echo $PODIP
+curl http://$PODIP:8080
+
+
+#Scale the deployment, new endpoints are registered automatically
+kubectl scale deployment hello-world-clusterip --replicas=6
+kubectl get endpoints hello-world-clusterip
+
+
+#Access the service inside the cluster, this time our requests will be load balanced...whooo!
+curl http://$SERVICEIP
+
+
+#The Service's Endpoints match the labels, let's look at the service and it's selector and the pods labels.
+kubectl describe service hello-world-clusterip
+kubectl get pods --show-labels
+
+
+#Clean up these resources for the next demo
+kubectl delete deployments hello-world-clusterip
+kubectl delete service hello-world-clusterip
+
+
+
+
+#2 - Creating a NodePort Service
+#Imperative, create a deployment with one replica
+kubectl create deployment hello-world-nodeport \
+    --image=psk8s.azurecr.io/hello-app:1.0
+
+
+#When creating a service, you can define a type, if you don't define a type, the default is ClusterIP
+kubectl expose deployment hello-world-nodeport \
+    --port=80 --target-port=8080 --type NodePort
+
+
+#Let's check out the services details, there's the Node Port after the : in the Ports column. It's also got a ClusterIP and Port
+#This NodePort service is available on that NodePort on each node in the cluster
+kubectl get service
+
+
+CLUSTERIP=$(kubectl get service hello-world-nodeport -o jsonpath='{ .spec.clusterIP }')
+PORT=$(kubectl get service hello-world-nodeport -o jsonpath='{ .spec.ports[].port }')
+NODEPORT=$(kubectl get service hello-world-nodeport -o jsonpath='{ .spec.ports[].nodePort }')
+
+#Let's access the services on the Node Port...we can do that on each node in the cluster and 
+#from outside the cluster...regardless of where the pod actually is
+
+#We have only one pod online supporting our service
+kubectl get pods -o wide
+
+
+#And we can access the service by hitting the node port on ANY node in the cluster on the Node's Real IP or Name.
+#This will forward to the cluster IP and get load balanced to a Pod. Even if there is only one Pod.
+curl http://c1-cp1:$NODEPORT
+curl http://c1-node1:$NODEPORT
+curl http://c1-node2:$NODEPORT
+curl http://c1-node3:$NODEPORT
+
+
+#And a Node port service is also listening on a Cluster IP, in fact the Node Port traffic is routed to the ClusterIP
+echo $CLUSTERIP:$PORT
+curl http://$CLUSTERIP:$PORT
+
+
+#Let's delete that service
+kubectl delete service hello-world-nodeport
+kubectl delete deployment hello-world-nodeport
+
+
+
+
+#3 - Creating LoadBalancer Services in Azure or any cloud
+#Switch contexts into AKS, we created this cluster together in 'Kubernetes Installation and Configuration Fundamentals'
+#I've added a script to create a GKE and AKS cluster this course's downloads.
+kubectl config use-context 'CSCluster'
+
+
+#Let's create a deployment
+kubectl create deployment hello-world-loadbalancer \
+    --image=psk8s.azurecr.io/hello-app:1.0
+
+
+#When creating a service, you can define a type, if you don't define a type, the default is ClusterIP
+kubectl expose deployment hello-world-loadbalancer \
+    --port=80 --target-port=8080 --type LoadBalancer
+
+
+#Can take a minute for the load balancer to provision and get an public IP, you'll see EXTERNAL-IP as <pending>
+kubectl get service
+
+
+LOADBALANCERIP=$(kubectl get service hello-world-loadbalancer -o jsonpath='{ .status.loadBalancer.ingress[].ip }')
+curl http://$LOADBALANCERIP:$PORT
+
+
+#The loadbalancer, which is 'outside' your cluster, sends traffic to the NodePort Service which sends it to the ClusterIP to get to your pods!
+#Your cloud load balancer will have health probes checking the health of the node port service on the real node IPs.
+#This isn't the health of our application, that still needs to be configured via readiness/liveness probes and maintained by your Deployment configuration
+kubectl get service hello-world-loadbalancer
+
+
+
+#Clean up the resources from this demo
+kubectl delete deployment hello-world-loadbalancer
+kubectl delete service hello-world-loadbalancer
+
+
+#Let's switch back to our local cluster
+kubectl config use-context kubernetes-admin@kubernetes
+
+
+
+#Declarative examples
+kubectl config use-context kubernetes-admin@kubernetes
+kubectl apply -f service-hello-world-clusterip.yaml
+kubectl get service
+
+
+#Creating a NodePort with a predefined port, first with a port outside of the NodePort range then a corrected one.
+kubectl apply -f service-hello-world-nodeport-incorrect.yaml
+kubectl apply -f service-hello-world-nodeport.yaml
+kubectl get service
+
+
+#Switch contexts to Azure to create a cloud load balancer
+kubectl config use-context 'CSCluster'
+kubectl apply -f service-hello-world-loadbalancer.yaml
+kubectl get service
+
+
+#Clean up these resources
+kubectl delete -f service-hello-world-loadbalancer.yaml
+kubectl config use-context kubernetes-admin@kubernetes
+kubectl delete -f service-hello-world-nodeport.yaml
+kubectl delete -f service-hello-world-clusterip.yaml
+
+```
+
+### Service Discovery:
+```
+ssh aen@c1-cp1
+cd ~/content/course/03/demos/
+
+
+#Service Discovery
+#Cluster DNS
+
+#Let's create a deployment in the default namespace
+kubectl create deployment hello-world-clusterip \
+    --image=psk8s.azurecr.io/hello-app:1.0
+
+
+#Let's create a deployment in the default namespace
+kubectl expose deployment hello-world-clusterip \
+    --port=80 --target-port=8080 --type ClusterIP
+
+
+#We can use nslookup or dig to investigate the DNS record, it's CNAME @10.96.0.10 is the cluser IP of our DNS Server
+kubectl get service kube-dns --namespace kube-system
+
+
+#Each service gets a DNS record, we can use this in our applications to find services by name.
+#The A record is in the form <servicename>.<namespace>.svc.<clusterdomain>
+nslookup hello-world-clusterip.default.svc.cluster.local 10.96.0.10
+kubectl get service hello-world-clusterip
+
+
+#Create a namespace, deployment with one replica and a service
+kubectl create namespace ns1
+
+
+#Let's create a deployment with the same name as the first one, but in our new namespace
+kubectl create deployment hello-world-clusterip --namespace ns1 \
+    --image=psk8s.azurecr.io/hello-app:1.0
+
+
+kubectl expose deployment hello-world-clusterip --namespace ns1 \
+    --port=80 --target-port=8080 --type ClusterIP
+
+
+#Let's check the DNS record for the service in the namespace, ns1. See how ns1 is in the DNS record?
+#<servicename>.<namespace>.svc.<clusterdomain>
+nslookup hello-world-clusterip.ns1.svc.cluster.local 10.96.0.10
+
+
+#Our service in the default namespace is still there, these are completely unique services.
+nslookup hello-world-clusterip.default.svc.cluster.local 10.96.0.10
+
+
+#Get the environment variables for the pod in our default namespace
+#More details about the lifecycle of variables in "Configuring and Managing Kubernetes Storage and Scheduling"
+#Only the kubernetes service is available? Why? I created the deployment THEN I created the service
+PODNAME=$(kubectl get pods -o jsonpath='{ .items[].metadata.name }')
+echo $PODNAME
+kubectl exec -it $PODNAME -- env | sort
+
+
+#Environment variables are only created at pod start up, so let's delete the pod
+kubectl delete pod $PODNAME
+
+
+#And check the enviroment variables again...
+PODNAME=$(kubectl get pods -o jsonpath='{ .items[].metadata.name }')
+echo $PODNAME
+kubectl exec -it $PODNAME -- env | sort
+
+
+#ExternalName
+kubectl apply -f service-externalname.yaml
+
+
+#The record is in the form <servicename>.<namespace>.<clusterdomain>. You may get an error that says ** server can't find hello-world.api.example.com: NXDOMAIN this is ok.
+nslookup hello-world-api.default.svc.cluster.local 10.96.0.10
+
+
+
+
+#Let's clean up our resources in this demo
+kubectl delete service hello-world-api
+kubectl delete service hello-world-clusterip
+kubectl delete service hello-world-clusterip --namespace ns1
+kubectl delete deployment hello-world-clusterip
+kubectl delete deployment hello-world-clusterip --namespace ns1
+kubectl delete namespace ns1
+
+```
+
+### Create AKCS Cluster:
+```
+# This demo will be run from c1-cp1 since kubectl is already installed there.
+# This can be run from any system that has the Azure CLI client installed.
+
+#Ensure Azure CLI command line utilitles are installed
+#https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest
+AZ_REPO=$(lsb_release -cs)
+echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+
+
+#Install the gpg key for Microsoft's repository
+curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+
+
+sudo apt-get update
+sudo apt-get install azure-cli
+
+
+#Log into our subscription
+#Free account - https://azure.microsoft.com/en-us/free/
+az login
+az account set --subscription "Demonstration Account"
+
+
+#Create a resource group for the serivces we're going to create
+az group create --name "Kubernetes-Cloud" --location centralus
+
+
+#Let's get a list of the versions available to us
+az aks get-versions --location centralus -o table
+
+
+#Let's create our AKS managed cluster. Use --kubernetes-version to specify a version.
+az aks create \
+    --resource-group "Kubernetes-Cloud" \
+    --generate-ssh-keys \
+    --name CSCluster \
+    --node-count 3 #default Node count is 3
+
+
+#If needed, we can download and install kubectl on our local system.
+az aks install-cli
+
+
+#Get our cluster credentials and merge the configuration into our existing config file.
+#This will allow us to connect to this system remotely using certificate based user authentication.
+az aks get-credentials --resource-group "Kubernetes-Cloud" --name CSCluster
+
+
+#List our currently available contexts
+kubectl config get-contexts
+
+
+#set our current context to the Azure context
+kubectl config use-context CSCluster
+
+
+#run a command to communicate with our cluster.
+kubectl get nodes
+
+
+#Get a list of running pods, we'll look at the system pods since we don't have anything running.
+#Since the API Server is HTTP based...we can operate our cluster over the internet...esentially the same as if it was local using kubectl.
+kubectl get pods --all-namespaces
+
+
+#Let's set to the kubectl context back to our local custer
+kubectl config use-context kubernetes-admin@kubernetes
+
+
+#use kubectl get nodes
+kubectl get nodes
+
+#az aks delete --resource-group "Kubernetes-Cloud" --name CSCluster #--yes --no-wait
+```
+
+### Create GKE Cluster
+```
+#Instructions from this URL: https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
+# Create environment variable for correct distribution
+CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+
+
+# Add the Cloud SDK distribution URL as a package source
+echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+
+
+# Import the Google Cloud Platform public key
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+
+# Update the package list and install the Cloud SDK
+sudo apt-get update 
+sudo apt-get install google-cloud-sdk
+
+
+#Authenticate our console session with gcloud
+gcloud init --console-only
+
+
+#Create a named gcloud project
+gcloud projects create psdemogke-1 --name="Kubernetes-Cloud"
+
+
+#Set our current project context
+gcloud config set project psdemogke-1
+
+
+#You may have to adjust your resource limits and enabled billing here based on your subscription here.
+#1. Go to https://console.cloud.google.com
+#2. Ensure that you are in the project you just created, in the search bar type "Projects" and select the project we just created.
+#3. From the Navigation menu on the top left, click Kubernetes Engine
+#4. On the Kubernetes Engine landing page click "ENABLE BILLING" and select a billing account from the drop down list. Then click "Set Account" 
+#       Then wait until the Kubernete API is enabled, this may take several minutes.
+
+
+#Tell GKE to create a single zone, three node cluster for us. 3 is the default size.
+#We're disabling basic authentication as it's no longer supported after 1.19 in GKE
+#For more information on authentication check out this link here:
+#   https://cloud.google.com/kubernetes-engine/docs/how-to/api-server-authentication#authenticating_users
+gcloud container clusters create cscluster --region us-central1-a --no-enable-basic-auth
+
+
+#Get our credentials for kubectl, this uses oath rather than certficates.
+#See this link for more details on authentication to GKE Clusters
+#   https://cloud.google.com/kubernetes-engine/docs/how-to/api-server-authentication#authenticating_users
+gcloud container clusters get-credentials cscluster --zone us-central1-a --project psdemogke-1
+
+
+#Check out out lists of kubectl contexts
+kubectl config get-contexts
+
+
+#set our current context to the GKE context, you may need to update this to your cluster context name.
+kubectl config use-context gke_psdemogke-1_us-central1-a_cscluster
+
+
+#run a command to communicate with our cluster.
+kubectl get nodes
+
+
+#Delete our GKE cluster
+#gcloud container clusters delete cscluster --zone=us-central1-a 
+
+#Delete our project.
+#gcloud projects delete psdemogke-1
+
+
+#Get a list of all contexts on this system.
+kubectl config get-contexts
+
+
+#Let's set to the kubectl context back to our local custer
+kubectl config use-context kubernetes-admin@kubernetes
+
+
+#use kubectl get nodes
+kubectl get nodes
+
+```
